@@ -38,7 +38,7 @@ void FbxLoader::Finalize()
 	fbxManager->Destroy();
 }
 
-void FbxLoader::LoadModelFromFile(const string& modelName)
+Model* FbxLoader::LoadModelFromFile(const string& modelName)
 {
 	//モデルと同じ名前のフォルダから読み込む
 	const string directoryPath = baseDirectory + modelName + "/";
@@ -62,6 +62,7 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 	//モデル生成
 	Model* model = new Model();
 	model->name = modelName;
+
 	//FBXノードの数を取得
 	int nodeCount = fbxScene->GetNodeCount();
 	//あらかじめ必要数分のメモリを確保することで、アドレスがずれるのを予防
@@ -73,6 +74,8 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 
 	//バッファ生成
 	model->CreateBuffers(device);
+
+	return model;
 }
 
 void FbxLoader::ParseNodeRecursive(Model* model, FbxNode* fbxNode, Node* parent)
@@ -99,16 +102,17 @@ void FbxLoader::ParseNodeRecursive(Model* model, FbxNode* fbxNode, Node* parent)
 	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]);
 
 	//スケール、回転、平行移動行列の計算
-	XMMATRIX matScaling, matRotation, matTranlation;
+	XMMATRIX matScaling, matRotation, matTranslation;
+
 	matScaling = XMMatrixScalingFromVector(node.scaling);
 	matRotation = XMMatrixRotationRollPitchYawFromVector(node.rotation);
-	matTranlation = XMMatrixTranslationFromVector(node.translation);
+	matTranslation = XMMatrixTranslationFromVector(node.translation);
 
 	//ローカル変換行列の計算
 	node.transform = XMMatrixIdentity();
 	node.transform *= matScaling;	//ワールド行列にスケーリングを反映
-	node.transform *= matRotation;	//ワールド行列に回tンを反映
-	node.transform *= matTranlation;	//ワールド行列に平行移動を反映
+	node.transform *= matRotation;	//ワールド行列に回転を反映
+	node.transform *= matTranslation;	//ワールド行列に平行移動を反映
 
 	//グローバル変形行列の計算
 	node.gloabalTransform = node.transform;
@@ -178,7 +182,7 @@ void FbxLoader::ParseMeshVertices(Model* model, FbxMesh* fbxMesh)
 
 void FbxLoader::ParseMeshFaces(Model* model, FbxMesh* fbxMesh)
 {
-	auto vertices = model->vertices;
+	auto& vertices = model->vertices;
 	auto& indices = model->indices;
 
 	//1ファイルに複数メッシュのモデルは非対応
