@@ -87,6 +87,11 @@ public:	//メンバ関数
 	/// </summary>
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
+	/// <summary>
+	/// アニメーション開始
+	/// </summary>
+	void PlayAnimation();
+
 	//setter
 	/// <summary>
 	/// モデルのセット
@@ -99,5 +104,16 @@ private:	//メンバ変数
 	ComPtr<ID3D12Resource> constBuffTransform;
 	//定数バッファ(スキン)
 	ComPtr<ID3D12Resource> constBuffSkin;
+
+	//1フレームの時間
+	FbxTime frameTime;
+	//アニメーション開始時間
+	FbxTime startTime;
+	//アニメーション終了時間
+	FbxTime endTime;
+	//現在時間(アニメーション)
+	FbxTime currentTime;
+	//アニメーション再生中
+	bool isPlay = false;
 };
 
