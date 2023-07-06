@@ -9,12 +9,12 @@
 #include "PostEffect.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	// 汎用機能
 	WinApp* win = nullptr;
 	DirectXCommon* dxCommon = nullptr;
-	Input* input = nullptr;	
+	Input* input = nullptr;
 	Audio* audio = nullptr;
 	GameScene* gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 	// ゲームウィンドウの作成
 	win = new WinApp();
 	win->CreateGameWindow();
-		
+
 	//DirectX初期化処理
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(win);
@@ -54,23 +54,21 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 	//FBXローダー初期化
 	FbxLoader::GetInstance()->Initialize(dxCommon->GetDevice());
 
-	//ポストエフェクト用テクスチャの読み込み
-	Sprite::LoadTexture(100, L"Resources/white1x1.png");
 	//ポストエフェクトの初期化
-	postEffect = new PostEffect();
-	postEffect->Initialize();
+	postEffect = new PostEffect(100, { 0,0 }, { 500.0f,500.0f }, { 1,1,1,1 }, { 0.0f,0.0f });
+	postEffect->Initialize(dxCommon->GetDevice());
 
 #pragma endregion
 
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
 	gameScene->Initialize(dxCommon, input, audio);
-	
+
 	// メインループ
 	while (true)
 	{
 		// メッセージ処理
-		if (win->ProcessMessage()) {	break; }
+		if (win->ProcessMessage()) { break; }
 
 		// 入力関連の毎フレーム処理
 		input->Update();
@@ -89,7 +87,7 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 
 		//ポストエフェクトの描画
 		postEffect->Draw(dxCommon->GetCommandList());
-		
+
 		// 描画終了
 		dxCommon->PostDraw();
 	}
