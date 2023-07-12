@@ -7,6 +7,7 @@
 //#include <fbxsdk.h>
 #include "FbxLoader.h"
 #include "PostEffect.h"
+//#include "FPSControll.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -18,6 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Audio* audio = nullptr;
 	GameScene* gameScene = nullptr;
 	PostEffect* postEffect = nullptr;
+	//FPSControll* fpsControll = nullptr;
 	//FbxManager* fbxManager = FbxManager::Create();
 
 	// ゲームウィンドウの作成
@@ -58,6 +60,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	postEffect = new PostEffect(100, { 0,0 }, { 500.0f,500.0f }, { 1,1,1,1 }, { 0.0f,0.0f });
 	postEffect->Initialize(dxCommon->GetDevice());
 
+	//fpsControll = new FPSControll();
+
 #pragma endregion
 
 	// ゲームシーンの初期化
@@ -69,6 +73,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		// メッセージ処理
 		if (win->ProcessMessage()) { break; }
+
+		//fpsControll->PreFPSSet60();
 
 		// 入力関連の毎フレーム処理
 		input->Update();
@@ -90,11 +96,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// 描画終了
 		dxCommon->PostDraw();
+
+		//fpsControll->PostFPSSet60();
 	}
 	// 各種解放
 	safe_delete(gameScene);
 	safe_delete(audio);
 	safe_delete(dxCommon);
+	//safe_delete(fpsControll);
 	FbxLoader::GetInstance()->Finalize();
 	delete postEffect;
 

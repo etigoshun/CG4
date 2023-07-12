@@ -185,10 +185,10 @@ void PostEffect::Initialize(ID3D12Device* device)
 
 	//頂点データ
 	VertexPosUv vertices[vertNum] = {
-		{{-1.0f,-1.0f,0.0f}, {0.0f,1.0f}},	//左下
-		{{-1.0f,+1.0f,0.0f}, {0.0f,0.0f}},	//左上
-		{{+1.0f,-1.0f,0.0f}, {1.0f,1.0f}},	//右下
-		{{+1.0f,+1.0f,0.0f}, {1.0f,0.0f}},	//右上
+		{{-0.5f,-0.5f,0.0f}, {0.0f,1.0f}},	//左下
+		{{-0.5f,+0.5f,0.0f}, {0.0f,0.0f}},	//左上
+		{{+0.5f,-0.5f,0.0f}, {1.0f,1.0f}},	//右下
+		{{+0.5f,+0.5f,0.0f}, {1.0f,0.0f}},	//右上
 	};
 
 	//頂点バッファへのデータ転送
@@ -427,7 +427,7 @@ void PostEffect::CreateGraphicsPipelineState()
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_POINT); // s0 レジスタ
-	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
 
 	// ルートシグネチャの設定
