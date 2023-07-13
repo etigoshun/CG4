@@ -31,7 +31,6 @@ float4 main(VSOutput input) : SV_TARGET
 	}
 
 	// ピクセル数で割って平均化
-	//blur /= (kernelSize * 2 + 1) * (kernelSize * 2 + 1);
 	colortex1.rgb = blur / 9.0f;
 
 	float4 color = 1.0f - colortex0;
